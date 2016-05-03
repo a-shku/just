@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Maps</title>
+ <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body>
+<div id="map" style="width:100%; height:500px;"></div>
+
+
+
+<!--cd loftblog/server
+node ./server.js-->
+<script src="script.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+   /* ymaps.ready(init);
+    var myMap;
+
+    function init(){     
+        myMap = new ymaps.Map("map", {
+            center: [50.0, 36.20],
+            zoom: 12
+        });
+		
+		  myPlacemark = new ymaps.Placemark([49.99, 36.23], { 
+            hintContent: 'Moscow!', 
+            balloonContent: 'balloonContent' 
+        });
+
+        myMap.geoObjects.add(myPlacemark);
+		
+		 myMap.events.add('click', function (e) {
+       var coords = e.get('coords');
+		
+		//
+			// Если метка уже создана – просто передвигаем ее
+        if (myPlacemark) {
+            myPlacemark.geometry.setCoordinates(coords);
+        }
+        // Если нет – создаем.
+        else {
+            myPlacemark = createPlacemark(coords);
+            myMap.geoObjects.add(myPlacemark);
+            // Слушаем событие окончания перетаскивания на метке.
+            myPlacemark.events.add('dragend', function () {
+                getAddress(myPlacemark.geometry.getCoordinates());
+            });
+        }
+        getAddress(coords);
+		
+		//получение адреса
+		var adr1, adr2
+		function getAddress(coords) {
+        myPlacemark.properties.set('iconContent', 'поиск...');
+        ymaps.geocode(coords).then(function (res) {
+            var firstGeoObject = res.geoObjects.get(0);
+
+            myPlacemark.properties
+                .set({
+                    iconContent: firstGeoObject.properties.get('name'),
+                    balloonContent: firstGeoObject.properties.get('text')
+                });
+				adr1 = firstGeoObject.properties.get('text');
+				adr2 = firstGeoObject.properties.get('name')
+				console.log(firstGeoObject.properties.get('text'));
+				console.log(firstGeoObject.properties.get('name'));
+        });
+		
+		 if (!myMap.balloon.isOpen()) {
+            
+            myMap.balloon.open(coords, {
+                contentHeader:'Событие!',
+                contentBody:'<p>Кто-то щелкнул по карте.</p>' +
+					'<p>'+adr1+'</>'+
+					'<p>'+adr2+'</>'+
+                    '<p>Координаты щелчка: ' + [
+                    coords[0].toPrecision(6),
+                    coords[1].toPrecision(6)
+                    ].join(', ') + '</p>'+'<input><br><input>',
+                contentFooter:'<sup>Щелкните еще раз</sup>'
+            });
+        }
+        else {
+            myMap.balloon.close();
+        }
+		
+    };
+		//
+		
+    });
+	
+		
+	
+	
+		
+    };*/
+	
+ 
+    
+</script>
+</body>
+</html>
