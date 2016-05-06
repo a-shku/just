@@ -2,7 +2,7 @@ ymaps.ready(function () {
 	var myPlacemark;
     var myMap = new ymaps.Map('map', {
             center: [50.0, 36.20],
-            zoom: 12,
+            zoom: 14,
             behaviors: ['default', 'scrollZoom']
         }, {
             searchControlProvider: 'yandex#search'
@@ -63,82 +63,137 @@ ymaps.ready(function () {
     myMap.events.add('click', function (e) {
         var coords = e.get('coords'),
 			address = getAddress(coords);
-			
-			
-		
+		//var present;
 		address.then(function(gotAddress){
 			console.log(gotAddress.properties.get('name'));
 			
+				/*get reviews*/
+			new Promise(function(resolve, reject){
+				var xhr = new XMLHttpRequest();
+					xhr.responseType = 'json';
+					
+					xhr.open('post', 'http://localhost:3000/', true);
+					xhr.send(JSON.stringify({
+						op: 'get',
+						address: gotAddress.properties.get('text'),
+					}));
+					xhr.onload = function(){
+						console.log(xhr.response.length);
+						
+						
+						
+							
+						
+						resolve(xhr.response);
+					};/*/get reviews*/
+			}).then(function(present){
 			/*окно добавления*/
+			console.log(present);
+			if(present.length < 1){
+				present = 'нет отзывов'
+			} else{
+				var list = document.createElement('ul');
+				
+				for(var i = 0; i<present.length; i++){
+					//console.log(list);
+					var li = document.createElement('li');
+					for(var getReviews in present[i]){
+						console.log(getReviews +' = ' + present[i][getReviews]);
+					li.innerHTML = '<p>'+present[i][getReviews]+'</p>';
+					}
+					list.appendChild(li);
+				}
+				//document.getElementById('pres').appendChild(list);
+				console.log(list);
+				//console.log(document.getElementById('pres'));
+				var placeForReview = document.getElementsByClassName('class2');
+				console.log(placeForReview);
+				//console.log(placeForReview[0]);
+				//console.log(placeForReview.length);
+				placeForReview.innerHTML=list;
+				console.log(placeForReview.innerHTML);
+				
+				
+			}
 			
 			new Promise(function(resolve, reject){
 				if (!myMap.balloon.isOpen()) {
-            
+            console.log(present);
+			
             myMap.balloon.open(coords, {
 				
-                contentHeader:gotAddress.properties.get('name'),
-                contentBody: '<p>Кто-то щелкнул по карте.</p>' +
+                contentHeader: gotAddress.properties.get('text')/*+gotAddress.properties.get('name')*/,
+                contentBody: '<div id="pres" class="class2"><p>Кто-то щелкнул по карте.</p></div>' +present+
 				    '<p>Координаты щелчка: ' + [
                     coords[0].toPrecision(6),
                     coords[1].toPrecision(6)
-                    ].join(', ') + '</p>'+'<input id="name" placeholder="Name"><br><input id="place" placeholder="Place"><br>'+'<textarea id="review" placeholder="review"></textarea>',
-                contentFooter:'<button id="send">Send</button>'
-            }setTimeout(console.log(send), 10000););
-				console.log(document.getElementById('send'));
+                    ].join(', ') + '</p>'+'<input id="name1" placeholder="Name"><br><input id="place" placeholder="Place"><br>'+'<textarea id="review" placeholder="review"></textarea>',
+                contentFooter:'<button id="send" class="class1">Send</button>'
+            });
+				//console.log(document.getElementById('send'));
 			}
 			else {
 				myMap.balloon.close();
 			}
 				
-				resolve();
-			}).then(function(){
-				console.log('button', getElementsByTegName('button'));
-				setTimeout(console.log(send), 2000);
+			document.addEventListener('click',function(e){
+				if (e.target.classList.contains('class1')){
+				   
+				var name2 = name1.value;
+				console.log(name2);
+				var place1 = place.value;
+				console.log(place.value);
+				var text = review.value;
+				console.log(text);
 				
-			});
-			
-			setTimeout(console.log(document.getElementById('send')),  20000);
-			console.log('button', getElementsByTegName('button'));
-			/*окно добавления*/
-			
-			document.getElementById('send').addEventListener('click', function (e){
-				alert(123);
-				var name = name.value();
-				var place = place.value();
-				var text = review.value();
-				
-				placeMarkToMap(coords, gotAddress.properties.get('name'), name, place, text);
+				placeMarkToMap(coords, gotAddress.properties.get('name'), name2, place1, text);
 				 myMap.balloon.close();
+				 
+				 	var xhr = new XMLHttpRequest();
+			
+					xhr.open('post', 'http://localhost:3000/', true);
+					xhr.send(JSON.stringify({
+						op: 'add',
+						review: {
+							coords: {
+								x: coords[0],
+								y: coords[1]
+							},
+							address: gotAddress.properties.get('text'),
+							name: name2,
+							place: place1,
+							text: text
+						}
+					}));
+					xhr.onload = function(){
+						console.log(xhr.response);
+					};
+				 
+				 
+				};
+	
+			});
+				
+			
+				
+				resolve();
+			})}).then(function(){
+				console.log('button', document.getElementsByTagName('button'));
+				var button = document.getElementsByTagName('button')
+	
 			});
 			
-			
-			
-			
-			var xhr = new XMLHttpRequest();
-			
-			xhr.open('post', 'http://localhost:3000/', true);
-			xhr.send(JSON.stringify({
-				op: 'add',
-				review: {
-					coords: {
-						x: coords[0],
-						y: coords[1]
-					},
-					address: gotAddress.properties.get('text'),
-					name: name,
-					place: place,
-					text: text
-				}
-			}));
 		});
     });
+	
+	
 
 	function placeMarkToMap(coords, address, name, place, text){
 		myPlacemark = createPlacemark(coords);
 			myPlacemark.properties
                 .set({
                     //iconContent: name,
-					balloonContentHeader: place,
+					balloonContentHeader: address +'<br> '+ place,
 					balloonContentBody: text,
 					balloonContentFooter: name
                 });
@@ -169,6 +224,7 @@ ymaps.ready(function () {
 		xhr.onload = function(){
 			console.log(xhr.response);
 			for(var address in xhr.response){
+				console.log(address);
 				var reviews = xhr.response[address];
 				reviews.forEach(function(review){
 					placeMarkToMap([review.coords.x, review.coords.y], address, review.name, review.place, review.text);
