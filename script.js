@@ -17,12 +17,8 @@ ymaps.ready(function () {
 		clusterer = new ymaps.Clusterer({
         clusterDisableClickZoom: true,
         clusterOpenBalloonOnClick: true,
-        // Устанавливаем стандартный макет балуна кластера "Карусель".
         clusterBalloonContentLayout: 'cluster#balloonCarousel',
-        // Устанавливаем собственный макет.
         clusterBalloonItemContentLayout: customItemContentLayout,
-        // Устанавливаем режим открытия балуна. 
-        // В данном примере балун никогда не будет открываться в режиме панели.
         clusterBalloonPanelMaxMapArea: 0,
         // Устанавливаем размеры макета контента балуна (в пикселях).
         clusterBalloonContentLayoutWidth: 200,
@@ -79,7 +75,7 @@ ymaps.ready(function () {
 					}));
 					xhr.onload = function(){
 						console.log(xhr.response.length);
-						
+
 						resolve(xhr.response);
 					};/*/get reviews*/
 			}).then(function(present){
@@ -102,23 +98,31 @@ ymaps.ready(function () {
 				//document.getElementById('pres').appendChild(list);
 				console.log(list);
 				//console.log(document.getElementById('pres'));
-				var placeForReview = document.getElementsByClassName('class2');
-				console.log(placeForReview);
-				//console.log(placeForReview[0]);
-				//console.log(placeForReview.length);
-				placeForReview.innerHTML=list;
-				console.log(placeForReview.innerHTML);
 				
+				var wrapForRev = document.createElement('div');
+					console.log(wrapForRev);
+					wrapForRev.setAttribute('id', 'pres');
+					//wrapForRev.setAttribute('class', 'class2');
+					//console.log(wrapForRev);
+					//console.log(document.getElementsByClassName('class2'));
+				//var elemForRev = document.getElementById('pres');
+				//var placeForReview = document.getElementsByClassName('class2');
+				
+				wrapForRev.innerHTML=list;
+				console.log(wrapForRev.innerHTML);
+				
+				//console.log(wrapForRev);
 			}
 			
 			new Promise(function(resolve, reject){
+				console.log(wrapForRev);
 				if (!myMap.balloon.isOpen()) {
-            console.log(present);
+            //console.log(present);
 			
             myMap.balloon.open(coords, {
 				
                 contentHeader: gotAddress.properties.get('text')/*+gotAddress.properties.get('name')*/,
-                contentBody: '<div id="pres" class="class2"><p>Кто-то щелкнул по карте.</p></div>' +present+
+                contentBody: wrapForRev+' <p>Кто-то щелкнул по карте.</p>' +present+
 				    '<p>Координаты щелчка: ' + [
                     coords[0].toPrecision(6),
                     coords[1].toPrecision(6)
@@ -163,11 +167,12 @@ ymaps.ready(function () {
 					xhr.onload = function(){
 						console.log(xhr.response);
 					};
-				
+				 
+				 
 				};
 	
 			});
-				
+
 				resolve();
 			})}).then(function(){
 				console.log('button', document.getElementsByTagName('button'));
@@ -177,7 +182,6 @@ ymaps.ready(function () {
 			
 		});
     });
-	
 	
 
 	function placeMarkToMap(coords, address, name, place, text){
