@@ -80,10 +80,6 @@ ymaps.ready(function () {
 					xhr.onload = function(){
 						console.log(xhr.response.length);
 						
-						
-						
-							
-						
 						resolve(xhr.response);
 					};/*/get reviews*/
 			}).then(function(present){
@@ -112,7 +108,6 @@ ymaps.ready(function () {
 				//console.log(placeForReview.length);
 				placeForReview.innerHTML=list;
 				console.log(placeForReview.innerHTML);
-				
 				
 			}
 			
@@ -168,13 +163,10 @@ ymaps.ready(function () {
 					xhr.onload = function(){
 						console.log(xhr.response);
 					};
-				 
-				 
+				
 				};
 	
 			});
-				
-			
 				
 				resolve();
 			})}).then(function(){
