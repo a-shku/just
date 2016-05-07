@@ -87,7 +87,7 @@ ymaps.ready(function () {
 				var list = document.createElement('ul');
 				
 				for(var i = 0; i<present.length; i++){
-					//console.log(list);
+						delete present[i].coords;
 					var li = document.createElement('li');
 					for(var getReviews in present[i]){
 						console.log(getReviews +' = ' + present[i][getReviews]);
@@ -95,34 +95,23 @@ ymaps.ready(function () {
 					}
 					list.appendChild(li);
 				}
-				//document.getElementById('pres').appendChild(list);
 				console.log(list);
-				//console.log(document.getElementById('pres'));
 				
 				var wrapForRev = document.createElement('div');
 					console.log(wrapForRev);
 					wrapForRev.setAttribute('id', 'pres');
-					//wrapForRev.setAttribute('class', 'class2');
-					//console.log(wrapForRev);
-					//console.log(document.getElementsByClassName('class2'));
-				//var elemForRev = document.getElementById('pres');
-				//var placeForReview = document.getElementsByClassName('class2');
 				
-				wrapForRev.innerHTML=list;
+				wrapForRev.appendChild(list);
 				console.log(wrapForRev.innerHTML);
-				
-				//console.log(wrapForRev);
 			}
 			
 			new Promise(function(resolve, reject){
 				console.log(wrapForRev);
 				if (!myMap.balloon.isOpen()) {
-            //console.log(present);
-			
-            myMap.balloon.open(coords, {
+					myMap.balloon.open(coords, {
 				
                 contentHeader: gotAddress.properties.get('text')/*+gotAddress.properties.get('name')*/,
-                contentBody: wrapForRev+' <p>Кто-то щелкнул по карте.</p>' +present+
+                contentBody: '<div>'+wrapForRev.innerHtml+'</div>'+' <p>Кто-то щелкнул по карте.</p>' +present+
 				    '<p>Координаты щелчка: ' + [
                     coords[0].toPrecision(6),
                     coords[1].toPrecision(6)
