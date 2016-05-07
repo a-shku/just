@@ -91,7 +91,7 @@ ymaps.ready(function () {
 					var li = document.createElement('li');
 					for(var getReviews in present[i]){
 						console.log(getReviews +' = ' + present[i][getReviews]);
-					li.innerHTML = '<p>'+present[i][getReviews]+'</p>';
+					li.innerHTML += '<p>'+present[i][getReviews]+'</p>';
 					}
 					list.appendChild(li);
 				}
