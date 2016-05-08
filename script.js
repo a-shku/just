@@ -39,7 +39,7 @@ ymaps.ready(function () {
             };
         },
        points = [
-            [49.951903,36.211961], [49.953972,36.259610], [49.996188294179, 36.110912435790915], [49.981329,36.242781], [49.954708,36.248870], [49.953123,36.206067], [49.998585,36.254980]
+            [49.951903,36.211961], [49.996188294179, 36.101912435790915], [49.981329,36.242781], [49.954708,36.248870], [49.953123,36.206067]
         ],
         geoObjects = [];
     for(var i = 0, len = points.length; i < len; i++) {
@@ -81,28 +81,38 @@ ymaps.ready(function () {
 			}).then(function(present){
 			/*окно добавления*/
 			console.log(present);
+			var wrapForRev;
 			if(present.length < 1){
-				present = 'нет отзывов'
+				wrapForRev = 'нет отзывов'
 			} else{
 				var list = document.createElement('ul');
-				
+					list.classList.add('reviewsList');
 				for(var i = 0; i<present.length; i++){
 						delete present[i].coords;
 					var li = document.createElement('li');
 					for(var getReviews in present[i]){
-						console.log(getReviews +' = ' + present[i][getReviews]);
+						
+						if(getReviews == 'date'){
+							//alert(new Date(present[i][getReviews]));
+							var date = new Date(present[i][getReviews]);
+								console.log(getReviews +' = ' + date);
+					li.innerHTML += '<p class="date">'+date+'</p>';
+						}
+						else if(getReviews == 'address'){}
+						else{
+							console.log(getReviews +' = ' + present[i][getReviews]);
 					li.innerHTML += '<p>'+present[i][getReviews]+'</p>';
+						}
+						
 					}
 					list.appendChild(li);
 				}
-				console.log(list);
-				
+								
 				var wrapForRev = document.createElement('div');
-					console.log(wrapForRev);
 					wrapForRev.setAttribute('id', 'pres');
 				
 				wrapForRev.appendChild(list);
-				console.log(wrapForRev.innerHTML);
+				var wrapForRev = wrapForRev.innerHTML;
 			}
 			
 			new Promise(function(resolve, reject){
@@ -111,14 +121,10 @@ ymaps.ready(function () {
 					myMap.balloon.open(coords, {
 				
                 contentHeader: gotAddress.properties.get('text')/*+gotAddress.properties.get('name')*/,
-                contentBody: '<div>'+wrapForRev.innerHtml+'</div>'+' <p>Кто-то щелкнул по карте.</p>' +present+
-				    '<p>Координаты щелчка: ' + [
-                    coords[0].toPrecision(6),
-                    coords[1].toPrecision(6)
-                    ].join(', ') + '</p>'+'<input id="name1" placeholder="Name"><br><input id="place" placeholder="Place"><br>'+'<textarea id="review" placeholder="review"></textarea>',
+                contentBody: '<div style="max-height:150px; overflow-y:auto;">'+wrapForRev+'</div>' +
+				    '<p>ОСТАВИТЬ ОТЗЫВ</p>'+'<input id="name1" placeholder="Name"><br><input id="place" placeholder="Place"><br>'+'<textarea id="review" placeholder="review"></textarea>',
                 contentFooter:'<button id="send" class="class1">Send</button>'
             });
-				//console.log(document.getElementById('send'));
 			}
 			else {
 				myMap.balloon.close();
